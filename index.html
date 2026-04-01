@@ -38,7 +38,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 30px;
             width: 95%;
-            max-width: 1100px; /* 패널 너비 확장 */
+            max-width: 1000px;
         }
 
         .reward-setting-row {
@@ -83,34 +83,33 @@
         .reset-btn { background: var(--dark-purple); box-shadow: 0 4px 0 #7b1fa2; }
         .refresh-btn:active, .reset-btn:active { transform: translateY(4px); box-shadow: none; }
 
-        /* 뽑기판 영역 - 가로 15줄 설정 */
+        /* 뽑기판 영역 - 가로 10개 설정 */
         .board {
             display: grid;
-            /* 가로 15줄 고정 또는 너비에 맞춰 자동 조절 */
-            grid-template-columns: repeat(15, 1fr); 
-            gap: 12px;
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 15px;
             width: 100%;
-            max-width: 1400px; /* 전체 너비 대폭 확장 */
+            max-width: 1100px;
             background: rgba(255, 255, 255, 0.6);
             padding: 30px;
             border-radius: 40px;
             box-shadow: inset 0 0 20px rgba(171, 71, 188, 0.1);
         }
 
-        /* 화면이 좁아질 때를 대비한 미디어 쿼리 (모바일 대응) */
-        @media (max-width: 1200px) { .board { grid-template-columns: repeat(10, 1fr); } }
-        @media (max-width: 800px) { .board { grid-template-columns: repeat(5, 1fr); } }
+        /* 모바일 대응: 화면이 좁을 땐 줄이기 */
+        @media (max-width: 900px) { .board { grid-template-columns: repeat(5, 1fr); } }
+        @media (max-width: 500px) { .board { grid-template-columns: repeat(4, 1fr); } }
 
         .paw-item {
-            aspect-ratio: 1 / 1; /* 정사각형 유지 */
+            aspect-ratio: 1 / 1;
             width: 100%;
-            max-width: 80px; /* 15줄을 위해 크기 살짝 조정 */
+            max-width: 90px;
             background: white;
             border-radius: 50%;
             position: relative;
             cursor: pointer;
             transition: transform 0.2s;
-            box-shadow: 0 4px 0 var(--main-purple);
+            box-shadow: 0 5px 0 var(--main-purple);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -121,21 +120,21 @@
         
         .paw-number {
             position: absolute;
-            bottom: 15%;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 3;
             font-weight: bold;
-            font-size: clamp(12px, 1.5vw, 18px); /* 글자 크기 유동적 조절 */
+            font-size: 1.2rem;
             color: var(--number-color);
             pointer-events: none;
             text-shadow: 1px 1px 0px white;
         }
 
         .paw-item::before {
-            content: ''; position: absolute; bottom: 10%; left: 50%;
+            content: ''; position: absolute; bottom: 8px; left: 50%;
             transform: translateX(-50%);
-            width: 50%; height: 45%;
+            width: 46px; height: 38px;
             background: var(--jelly-pink);
             border-radius: 50% 50% 45% 45%;
             opacity: 0.85;
@@ -143,12 +142,12 @@
         }
 
         .paw-item::after {
-            content: ''; position: absolute; top: 15%; left: 50%;
+            content: ''; position: absolute; top: 12px; left: 50%;
             transform: translateX(-50%);
-            width: 18%; height: 22%;
+            width: 16px; height: 20px;
             background: var(--jelly-pink);
             border-radius: 50%;
-            box-shadow: -150% 40% 0 var(--jelly-pink), 150% 40% 0 var(--jelly-pink);
+            box-shadow: -24px 6px 0 var(--jelly-pink), 24px 6px 0 var(--jelly-pink);
             opacity: 0.85;
             z-index: 2;
         }
@@ -217,7 +216,7 @@
         let gameData = [];
 
         window.onload = function() {
-            const savedRewards = localStorage.getItem('hajeNyangRewards_v15');
+            const savedRewards = localStorage.getItem('hajeNyangRewards_v10');
             if (savedRewards) {
                 const rewards = JSON.parse(savedRewards);
                 rewards.forEach((reward, index) => {
@@ -225,7 +224,7 @@
                 });
             } else {
                 addRow('🥇 1등 선물', 1, true);
-                addRow('💀 꽝', 29, false); // 가로 15줄이니 기본 30개로 설정
+                addRow('💀 꽝', 19, false); // 가로 10줄이니 기본 20개 세팅
             }
             updateTotalCount();
             initBoard();
@@ -267,7 +266,7 @@
                 });
             });
 
-            localStorage.setItem('hajeNyangRewards_v15', JSON.stringify(rewardList));
+            localStorage.setItem('hajeNyangRewards_v10', JSON.stringify(rewardList));
             updateTotalCount();
         }
 
