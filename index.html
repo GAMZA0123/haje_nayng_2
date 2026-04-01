@@ -11,7 +11,6 @@
             --dark-purple: #ab47bc;
             --jelly-pink: #ff80ab;
             --number-color: #7b1fa2;
-            /* 베이글펫 느낌의 폰트 설정 */
             --font-round: 'Jua', 'Gaegu', sans-serif;
         }
 
@@ -197,8 +196,8 @@
 
     <div class="modal" id="resultModal">
         <div class="modal-content">
-            <div style="font-size: 60px;">🐱</div>
-            <h2 style="font-size: 2rem; color: #555;">두구두구... 축하한다냥!</h2>
+            <div id="modalIcon" style="font-size: 60px;">🐱</div>
+            <h2 id="modalTitle" style="font-size: 2rem; color: #555;">두구두구... 축하한다냥!</h2>
             <div class="reward-text" id="rewardResult">보상 내용</div>
             <button class="close-modal-btn" onclick="closeModal()">닫기</button>
         </div>
@@ -216,7 +215,7 @@
                 });
             } else {
                 addRow('🐟 맛있는 츄르', 1, true);
-                addRow('💀 다음 기회에', 11, false);
+                addRow('💀 꽝', 11, false);
             }
             updateTotalCount();
             initBoard();
@@ -319,7 +318,23 @@
         function openReward(rewardName, element) {
             if (element.classList.contains('opened')) return;
             element.classList.add('opened');
-            document.getElementById('rewardResult').innerText = rewardName;
+            
+            const modalTitle = document.getElementById('modalTitle');
+            const modalIcon = document.getElementById('modalIcon');
+            const rewardResult = document.getElementById('rewardResult');
+
+            // "꽝"이 포함되어 있는지 확인
+            if (rewardName.includes('꽝') || rewardName.includes('다음 기회')) {
+                modalIcon.innerText = "😿";
+                modalTitle.innerText = "아쉽다냥... 위로해줄게!";
+                modalTitle.style.color = "#888";
+            } else {
+                modalIcon.innerText = "🐱";
+                modalTitle.innerText = "두구두구... 축하한다냥!";
+                modalTitle.style.color = "#555";
+            }
+
+            rewardResult.innerText = rewardName;
             document.getElementById('resultModal').style.display = 'flex';
         }
 
