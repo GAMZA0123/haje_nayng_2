@@ -27,7 +27,7 @@
         h1 { 
             color: var(--dark-purple); 
             margin-bottom: 10px; 
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3rem); /* 화면 크기에 맞게 제목 조절 */
             text-shadow: 2px 2px 0px white;
         }
 
@@ -38,7 +38,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 30px;
             width: 95%;
-            max-width: 1000px;
+            max-width: 1200px;
         }
 
         .reward-setting-row {
@@ -72,7 +72,7 @@
             transition: 0.3s;
             flex: 1;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             padding: 12px;
             border: none;
             border-radius: 20px;
@@ -83,58 +83,57 @@
         .reset-btn { background: var(--dark-purple); box-shadow: 0 4px 0 #7b1fa2; }
         .refresh-btn:active, .reset-btn:active { transform: translateY(4px); box-shadow: none; }
 
-        /* 뽑기판 영역 - 가로 10개 설정 */
+        /* 뽑기판 영역 - 가로 20개 설정 */
         .board {
             display: grid;
-            grid-template-columns: repeat(10, 1fr); 
-            gap: 15px;
+            grid-template-columns: repeat(20, 1fr); 
+            gap: 8px;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1500px; /* 넓은 화면 지원 */
             background: rgba(255, 255, 255, 0.6);
-            padding: 30px;
+            padding: 20px;
             border-radius: 40px;
             box-shadow: inset 0 0 20px rgba(171, 71, 188, 0.1);
         }
 
-        /* 모바일 대응: 화면이 좁을 땐 줄이기 */
-        @media (max-width: 900px) { .board { grid-template-columns: repeat(5, 1fr); } }
-        @media (max-width: 500px) { .board { grid-template-columns: repeat(4, 1fr); } }
+        /* 반응형 대응: 화면이 좁아지면 줄 수 조절 */
+        @media (max-width: 1400px) { .board { grid-template-columns: repeat(15, 1fr); } }
+        @media (max-width: 1000px) { .board { grid-template-columns: repeat(10, 1fr); } }
+        @media (max-width: 600px) { .board { grid-template-columns: repeat(5, 1fr); } }
 
         .paw-item {
             aspect-ratio: 1 / 1;
             width: 100%;
-            max-width: 90px;
             background: white;
             border-radius: 50%;
             position: relative;
             cursor: pointer;
             transition: transform 0.2s;
-            box-shadow: 0 5px 0 var(--main-purple);
+            box-shadow: 0 3px 0 var(--main-purple);
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto;
         }
 
-        .paw-item:hover { transform: scale(1.1); }
+        .paw-item:hover { transform: scale(1.15); z-index: 10; }
         
         .paw-number {
             position: absolute;
-            bottom: 12px;
+            bottom: 15%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 3;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: clamp(10px, 1.2vw, 15px); /* 숫자가 안 겹치게 작게 조절 */
             color: var(--number-color);
             pointer-events: none;
             text-shadow: 1px 1px 0px white;
         }
 
         .paw-item::before {
-            content: ''; position: absolute; bottom: 8px; left: 50%;
+            content: ''; position: absolute; bottom: 10%; left: 50%;
             transform: translateX(-50%);
-            width: 46px; height: 38px;
+            width: 50%; height: 45%;
             background: var(--jelly-pink);
             border-radius: 50% 50% 45% 45%;
             opacity: 0.85;
@@ -142,17 +141,17 @@
         }
 
         .paw-item::after {
-            content: ''; position: absolute; top: 12px; left: 50%;
+            content: ''; position: absolute; top: 15%; left: 50%;
             transform: translateX(-50%);
-            width: 16px; height: 20px;
+            width: 18%; height: 22%;
             background: var(--jelly-pink);
             border-radius: 50%;
-            box-shadow: -24px 6px 0 var(--jelly-pink), 24px 6px 0 var(--jelly-pink);
+            box-shadow: -150% 40% 0 var(--jelly-pink), 150% 40% 0 var(--jelly-pink);
             opacity: 0.85;
             z-index: 2;
         }
 
-        .paw-item.opened { background: #eee; opacity: 0.3; pointer-events: none; box-shadow: none; transform: scale(0.9); }
+        .paw-item.opened { background: #eee; opacity: 0.3; pointer-events: none; box-shadow: none; transform: scale(0.85); }
         .paw-item.opened .paw-number { display: none; }
 
         .modal {
@@ -216,7 +215,7 @@
         let gameData = [];
 
         window.onload = function() {
-            const savedRewards = localStorage.getItem('hajeNyangRewards_v10');
+            const savedRewards = localStorage.getItem('hajeNyangRewards_v20');
             if (savedRewards) {
                 const rewards = JSON.parse(savedRewards);
                 rewards.forEach((reward, index) => {
@@ -224,7 +223,7 @@
                 });
             } else {
                 addRow('🥇 1등 선물', 1, true);
-                addRow('💀 꽝', 19, false); // 가로 10줄이니 기본 20개 세팅
+                addRow('💀 꽝', 39, false); // 가로 20줄이니 기본 40개 세팅
             }
             updateTotalCount();
             initBoard();
@@ -266,7 +265,7 @@
                 });
             });
 
-            localStorage.setItem('hajeNyangRewards_v10', JSON.stringify(rewardList));
+            localStorage.setItem('hajeNyangRewards_v20', JSON.stringify(rewardList));
             updateTotalCount();
         }
 
