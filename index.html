@@ -157,6 +157,7 @@
             border: 8px solid var(--jelly-pink);
             animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-family: var(--font-round);
+            min-width: 300px;
         }
 
         @keyframes pop { from { transform: scale(0.5); } to { transform: scale(1); } }
@@ -196,8 +197,8 @@
 
     <div class="modal" id="resultModal">
         <div class="modal-content">
-            <div id="modalIcon" style="font-size: 60px;">🐱</div>
-            <h2 id="modalTitle" style="font-size: 2rem; color: #555;">두구두구... 축하한다냥!</h2>
+            <div id="modalIcon" style="font-size: 80px; margin-bottom: 10px;">🐱</div>
+            <h2 id="modalTitle" style="font-size: 2rem; color: #555; margin: 10px 0;">두구두구... 축하한다냥!</h2>
             <div class="reward-text" id="rewardResult">보상 내용</div>
             <button class="close-modal-btn" onclick="closeModal()">닫기</button>
         </div>
@@ -207,7 +208,7 @@
         let gameData = [];
 
         window.onload = function() {
-            const savedRewards = localStorage.getItem('hajeNyangRewards');
+            const savedRewards = localStorage.getItem('hajeNyangRewards_v2');
             if (savedRewards) {
                 const rewards = JSON.parse(savedRewards);
                 rewards.forEach((reward, index) => {
@@ -257,7 +258,7 @@
                 });
             });
 
-            localStorage.setItem('hajeNyangRewards', JSON.stringify(rewardList));
+            localStorage.setItem('hajeNyangRewards_v2', JSON.stringify(rewardList));
             updateTotalCount();
         }
 
@@ -323,15 +324,17 @@
             const modalIcon = document.getElementById('modalIcon');
             const rewardResult = document.getElementById('rewardResult');
 
-            // "꽝"이 포함되어 있는지 확인
-            if (rewardName.includes('꽝') || rewardName.includes('다음 기회')) {
+            // 꽝 판별 로직 강화: '꽝', '다음', 'fail', '아쉽' 단어가 포함되면 위로 모드
+            const isFail = rewardName.includes('꽝') || rewardName.includes('다음') || rewardName.includes('아쉽') || rewardName.includes('fail');
+
+            if (isFail) {
                 modalIcon.innerText = "😿";
                 modalTitle.innerText = "아쉽다냥... 위로해줄게!";
-                modalTitle.style.color = "#888";
+                modalTitle.style.color = "#777";
             } else {
                 modalIcon.innerText = "🐱";
                 modalTitle.innerText = "두구두구... 축하한다냥!";
-                modalTitle.style.color = "#555";
+                modalTitle.style.color = "#ab47bc";
             }
 
             rewardResult.innerText = rewardName;
