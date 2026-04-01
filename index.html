@@ -21,19 +21,18 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            letter-spacing: 0.5px;
         }
 
         h1 { 
             color: var(--dark-purple); 
-            margin-bottom: 10px; 
             font-size: clamp(2rem, 5vw, 3rem);
             text-shadow: 2px 2px 0px white;
+            margin-bottom: 20px;
         }
 
         .admin-panel {
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 30px;
@@ -43,138 +42,117 @@
 
         .reward-setting-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 10px;
             align-items: center;
         }
 
         input {
-            padding: 10px 15px;
-            border-radius: 15px;
+            padding: 8px 12px;
+            border-radius: 12px;
             border: 2px solid var(--main-purple);
             outline: none;
             font-family: var(--font-round);
-            font-size: 1rem;
         }
 
-        .btn-add { background: #81c784; color: white; border: none; cursor: pointer; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; line-height: 1; }
-        .btn-remove { background: #e57373; color: white; border: none; cursor: pointer; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; line-height: 1; }
+        .btn-add, .btn-remove { 
+            width: 30px; height: 30px; border-radius: 50%; border: none; 
+            color: white; font-size: 20px; cursor: pointer; 
+        }
+        .btn-add { background: #81c784; }
+        .btn-remove { background: #e57373; }
         
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
+        .button-group { display: flex; gap: 10px; margin-top: 15px; }
         .refresh-btn, .reset-btn {
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-            flex: 1;
-            font-weight: bold;
-            font-size: 1.1rem;
-            padding: 12px;
-            border: none;
-            border-radius: 20px;
-            font-family: var(--font-round);
+            flex: 1; padding: 12px; border: none; border-radius: 15px;
+            color: white; font-weight: bold; cursor: pointer; font-family: var(--font-round);
         }
+        .refresh-btn { background: var(--main-purple); }
+        .reset-btn { background: var(--dark-purple); }
 
-        .refresh-btn { background: var(--main-purple); box-shadow: 0 4px 0 #ab47bc; }
-        .reset-btn { background: var(--dark-purple); box-shadow: 0 4px 0 #7b1fa2; }
-        .refresh-btn:active, .reset-btn:active { transform: translateY(4px); box-shadow: none; }
-
-        /* 가로 20줄 레이아웃 */
+        /* 가로 20줄 핵심 레이아웃 */
         .board {
             display: grid;
             grid-template-columns: repeat(20, 1fr); 
-            gap: 8px;
+            gap: 6px;
             width: 100%;
-            max-width: 1600px;
-            background: rgba(255, 255, 255, 0.6);
-            padding: 25px;
-            border-radius: 40px;
-            box-shadow: inset 0 0 20px rgba(171, 71, 188, 0.1);
+            max-width: 1400px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 30px;
         }
 
-        @media (max-width: 1400px) { .board { grid-template-columns: repeat(15, 1fr); } }
-        @media (max-width: 1000px) { .board { grid-template-columns: repeat(10, 1fr); } }
+        @media (max-width: 1200px) { .board { grid-template-columns: repeat(10, 1fr); } }
         @media (max-width: 600px) { .board { grid-template-columns: repeat(5, 1fr); } }
 
+        /* 발바닥 디자인 강제 고정 */
         .paw-item {
             aspect-ratio: 1 / 1;
-            width: 100%;
             background: white;
             border-radius: 50%;
             position: relative;
             cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 0 var(--main-purple);
+            box-shadow: 0 3px 0 var(--main-purple);
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden; /* 요소가 밖으로 안 나가게 */
         }
 
-        .paw-item:hover { transform: scale(1.2); z-index: 10; }
-        
+        /* 큰 젤리 (절대 위치와 크기 재조정) */
+        .paw-item::before {
+            content: '';
+            position: absolute;
+            bottom: 10%;
+            width: 55%;
+            height: 45%;
+            background: var(--jelly-pink) !important;
+            border-radius: 50% 50% 40% 40%;
+            z-index: 1;
+            display: block !important;
+        }
+
+        /* 작은 젤리들 (그림자를 이용해 3개 발가락 구현) */
+        .paw-item::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            width: 18%;
+            height: 22%;
+            background: var(--jelly-pink) !important;
+            border-radius: 50%;
+            /* 중앙 발가락 기준 좌우 발가락 그림자 */
+            box-shadow: -22px 6px 0 var(--jelly-pink), 22px 6px 0 var(--jelly-pink);
+            z-index: 2;
+            display: block !important;
+        }
+
         .paw-number {
             position: absolute;
-            bottom: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
+            z-index: 10;
             font-weight: bold;
-            font-size: clamp(10px, 1.2vw, 18px);
+            font-size: clamp(10px, 1.2vw, 16px);
             color: var(--number-color);
-            pointer-events: none;
-            text-shadow: 1px 1px 0px white;
+            text-shadow: 1px 1px 0 white;
+            top: 45%; /* 중앙에 숫자 배치 */
         }
 
-        /* 말랑말랑 발바닥 디자인 */
-        .paw-item::before {
-            content: ''; position: absolute; bottom: 10%; left: 50%;
-            transform: translateX(-50%);
-            width: 55%; height: 45%;
-            background: var(--jelly-pink);
-            border-radius: 50% 50% 45% 45%;
-            opacity: 0.9;
-            z-index: 1;
-        }
+        .paw-item.opened { background: #eee; opacity: 0.2; box-shadow: none; }
+        .paw-item.opened::before, .paw-item.opened::after { display: none !important; }
 
-        .paw-item::after {
-            content: ''; position: absolute; top: 15%; left: 50%;
-            transform: translateX(-50%);
-            width: 18%; height: 22%;
-            background: var(--jelly-pink);
-            border-radius: 50%;
-            box-shadow: -155% 45% 0 var(--jelly-pink), 155% 45% 0 var(--jelly-pink);
-            opacity: 0.9;
-            z-index: 2;
-        }
-
-        .paw-item.opened { background: #eee; opacity: 0.3; pointer-events: none; box-shadow: none; transform: scale(0.85); }
-        .paw-item.opened .paw-number { display: none; }
-
-        /* 팝업 디자인 */
+        /* 팝업 모달 */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 100;
+            background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000;
         }
-
         .modal-content {
-            background: white; padding: 50px; border-radius: 40px; text-align: center;
-            border: 8px solid var(--jelly-pink);
-            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-family: var(--font-round);
-            min-width: 320px;
+            background: white; padding: 40px; border-radius: 35px; text-align: center;
+            border: 6px solid var(--jelly-pink); min-width: 280px;
         }
-
-        @keyframes pop { from { transform: scale(0.5); } to { transform: scale(1); } }
-        .reward-text { font-size: 35px; font-weight: bold; color: var(--dark-purple); margin-top: 20px; }
-        
-        .close-modal-btn {
-            margin-top: 25px; padding: 12px 35px; border-radius: 20px; border: none;
-            background: var(--dark-purple); color: white; cursor: pointer;
-            font-weight: bold; font-size: 1.2rem; font-family: var(--font-round);
+        .reward-text { font-size: 2rem; font-weight: bold; color: var(--dark-purple); margin: 20px 0; }
+        .close-modal-btn { 
+            padding: 10px 30px; background: var(--dark-purple); color: white; 
+            border: none; border-radius: 15px; font-family: var(--font-round); cursor: pointer;
         }
     </style>
 </head>
@@ -185,21 +163,18 @@
     <div class="admin-panel">
         <div id="rewardInputs"></div>
         <div class="button-group">
-            <button class="refresh-btn" onclick="initBoard()">설정 적용 (총 <span id="totalCountDisplay">0</span>개)</button>
-            <button class="reset-btn" onclick="resetCurrentBoard()">판 새로고침 (섞기)</button>
+            <button class="refresh-btn" onclick="initBoard()">설정 적용</button>
+            <button class="reset-btn" onclick="resetCurrentBoard()">판 새로고침</button>
         </div>
-        <p style="font-size: 0.9rem; color: #888; margin-top: 15px; text-align: center;">
-            * 리스트는 브라우저에 자동 저장되니 안심하냥! 🐱
-        </p>
     </div>
 
     <div class="board" id="gameBoard"></div>
 
     <div class="modal" id="resultModal">
         <div class="modal-content">
-            <div id="modalIcon" style="font-size: 80px; margin-bottom: 10px;">🐱</div>
-            <h2 id="modalTitle" style="font-size: 2.2rem; color: #555; margin: 10px 0;">두구두구... 축하한다냥!</h2>
-            <div class="reward-text" id="rewardResult">보상 내용</div>
+            <div id="modalIcon" style="font-size: 60px;">🐱</div>
+            <h2 id="modalTitle">축하한다냥!</h2>
+            <div class="reward-text" id="rewardResult">보상</div>
             <button class="close-modal-btn" onclick="closeModal()">닫기</button>
         </div>
     </div>
@@ -208,17 +183,14 @@
         let gameData = [];
 
         window.onload = function() {
-            const savedRewards = localStorage.getItem('hajeNyangRewards_final_v1');
+            const savedRewards = localStorage.getItem('hajeNyang_vfinal_20');
             if (savedRewards) {
                 const rewards = JSON.parse(savedRewards);
-                rewards.forEach((reward, index) => {
-                    addRow(reward.name, reward.qty, index === 0);
-                });
+                rewards.forEach((reward, index) => addRow(reward.name, reward.qty, index === 0));
             } else {
-                addRow('🐟 맛있는 츄르', 1, true);
+                addRow('🐟 츄르', 1, true);
                 addRow('💀 꽝', 39, false);
             }
-            updateTotalCount();
             initBoard();
         };
 
@@ -226,101 +198,56 @@
             const container = document.getElementById('rewardInputs');
             const div = document.createElement('div');
             div.className = 'reward-setting-row';
-            const btnTag = isFirst 
-                ? `<button class="btn-add" onclick="addRow('', 1, false)">+</button>` 
-                : `<button class="btn-remove" onclick="removeRow(this)">-</button>`;
-
             div.innerHTML = `
-                <input type="text" class="reward-name" placeholder="보상 이름" value="${name}" oninput="saveToLocal()" style="flex: 2;">
-                <input type="number" class="reward-qty" placeholder="개수" value="${qty}" style="flex: 0.5; min-width: 50px;" oninput="saveToLocal()">
-                ${btnTag}
+                <input type="text" class="reward-name" value="${name}" oninput="saveToLocal()" style="flex:2">
+                <input type="number" class="reward-qty" value="${qty}" style="width:50px" oninput="saveToLocal()">
+                ${isFirst ? `<button class="btn-add" onclick="addRow('', 1, false)">+</button>` : `<button class="btn-remove" onclick="removeRow(this)">-</button>`}
             `;
             container.appendChild(div);
-            updateTotalCount();
+            saveToLocal();
         }
 
-        function removeRow(btn) {
-            btn.parentElement.remove();
-            saveToLocal();
-            updateTotalCount();
-        }
+        function removeRow(btn) { btn.parentElement.remove(); saveToLocal(); }
 
         function saveToLocal() {
-            const rewardNames = document.querySelectorAll('.reward-name');
-            const rewardQtys = document.querySelectorAll('.reward-qty');
-            const rewardList = [];
-            rewardNames.forEach((input, index) => {
-                rewardList.push({ name: input.value, qty: parseInt(rewardQtys[index].value || 0) });
-            });
-            localStorage.setItem('hajeNyangRewards_final_v1', JSON.stringify(rewardList));
-            updateTotalCount();
-        }
-
-        function updateTotalCount() {
-            let total = 0;
-            document.querySelectorAll('.reward-qty').forEach(input => { total += parseInt(input.value || 0); });
-            document.getElementById('totalCountDisplay').innerText = total;
+            const names = document.querySelectorAll('.reward-name');
+            const qtys = document.querySelectorAll('.reward-qty');
+            const list = [];
+            names.forEach((n, i) => list.push({ name: n.value, qty: parseInt(qtys[i].value || 0) }));
+            localStorage.setItem('hajeNyang_vfinal_20', JSON.stringify(list));
         }
 
         function initBoard() {
-            const rewardNames = document.querySelectorAll('.reward-name');
-            const rewardQtys = document.querySelectorAll('.reward-qty');
+            const names = document.querySelectorAll('.reward-name');
+            const qtys = document.querySelectorAll('.reward-qty');
             gameData = [];
-            rewardNames.forEach((input, index) => {
-                const name = input.value || "선물";
-                const qty = parseInt(rewardQtys[index].value || 0);
-                for(let i=0; i<qty; i++) { gameData.push(name); }
+            names.forEach((n, i) => {
+                for(let j=0; j<parseInt(qtys[i].value || 0); j++) gameData.push(n.value);
             });
-            if(gameData.length === 0) { alert("보상을 입력해달라냥!"); return; }
             renderBoard();
         }
 
-        function resetCurrentBoard() {
-            if(gameData.length === 0) initBoard();
-            else renderBoard();
-        }
+        function resetCurrentBoard() { renderBoard(); }
 
         function renderBoard() {
             const board = document.getElementById('gameBoard');
             board.innerHTML = '';
-            const shuffleData = [...gameData];
-            for (let i = shuffleData.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffleData[i], shuffleData[j]] = [shuffleData[j], shuffleData[i]];
-            }
-            shuffleData.forEach((reward, i) => {
+            const shuffle = [...gameData].sort(() => Math.random() - 0.5);
+            shuffle.forEach((reward, i) => {
                 const item = document.createElement('div');
                 item.className = 'paw-item';
-                const numSpan = document.createElement('span');
-                numSpan.className = 'paw-number';
-                numSpan.innerText = i + 1;
-                item.appendChild(numSpan);
-                item.onclick = () => openReward(reward, item);
+                item.innerHTML = `<span class="paw-number">${i+1}</span>`;
+                item.onclick = () => {
+                    if(item.classList.contains('opened')) return;
+                    item.classList.add('opened');
+                    const isFail = reward.includes('꽝') || reward.includes('다음');
+                    document.getElementById('modalIcon').innerText = isFail ? "😿" : "🐱";
+                    document.getElementById('modalTitle').innerText = isFail ? "아쉽다냥... 위로해줄게!" : "축하한다냥!";
+                    document.getElementById('rewardResult').innerText = reward;
+                    document.getElementById('resultModal').style.display = 'flex';
+                };
                 board.appendChild(item);
             });
-        }
-
-        function openReward(rewardName, element) {
-            if (element.classList.contains('opened')) return;
-            element.classList.add('opened');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalIcon = document.getElementById('modalIcon');
-            const rewardResult = document.getElementById('rewardResult');
-
-            const isFail = rewardName.includes('꽝') || rewardName.includes('다음') || rewardName.includes('아쉽');
-
-            if (isFail) {
-                modalIcon.innerText = "😿";
-                modalTitle.innerText = "아쉽다냥... 위로해줄게!";
-                modalTitle.style.color = "#888";
-            } else {
-                modalIcon.innerText = "🐱";
-                modalTitle.innerText = "두구두구... 축하한다냥!";
-                modalTitle.style.color = "#ab47bc";
-            }
-
-            rewardResult.innerText = rewardName;
-            document.getElementById('resultModal').style.display = 'flex';
         }
 
         function closeModal() { document.getElementById('resultModal').style.display = 'none'; }
