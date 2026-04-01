@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>하제냥이 뽑기판</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --light-purple: #f3e5f5;
+            --main-purple: #ce93d8;
+            --dark-purple: #ab47bc;
+            --jelly-pink: #ff80ab;
+            --number-color: #7b1fa2;
+            /* 베이글펫 느낌의 폰트 설정 */
+            --font-round: 'Jua', 'Gaegu', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-purple);
+            font-family: var(--font-round);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        h1 { 
+            color: var(--dark-purple); 
+            margin-bottom: 10px; 
+            font-size: 3rem;
+            text-shadow: 2px 2px 0px white;
+        }
+
+        .admin-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            width: 95%;
+            max-width: 600px;
+        }
+
+        .reward-setting-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        input {
+            padding: 10px 15px;
+            border-radius: 15px;
+            border: 2px solid var(--main-purple);
+            outline: none;
+            font-family: var(--font-round);
+            font-size: 1rem;
+        }
+
+        .btn-add { background: #81c784; color: white; border: none; cursor: pointer; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; line-height: 1; }
+        .btn-remove { background: #e57373; color: white; border: none; cursor: pointer; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; line-height: 1; }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .refresh-btn, .reset-btn {
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            flex: 1;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 12px;
+            border: none;
+            border-radius: 20px;
+            font-family: var(--font-round);
+        }
+
+        .refresh-btn { background: var(--main-purple); box-shadow: 0 4px 0 #ab47bc; }
+        .reset-btn { background: var(--dark-purple); box-shadow: 0 4px 0 #7b1fa2; }
+        .refresh-btn:active, .reset-btn:active { transform: translateY(4px); box-shadow: none; }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 850px;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 35px;
+            border-radius: 40px;
+            box-shadow: inset 0 0 20px rgba(171, 71, 188, 0.1);
+        }
+
+        .paw-item {
+            width: 85px; height: 85px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 6px 0 var(--main-purple);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .paw-item:hover { transform: scale(1.1); }
+        
+        .paw-number {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            font-weight: bold;
+            font-size: 20px;
+            color: var(--number-color);
+            pointer-events: none;
+            text-shadow: 1px 1px 0px white;
+        }
+
+        .paw-item::before {
+            content: ''; position: absolute; bottom: 8px; left: 50%;
+            transform: translateX(-50%);
+            width: 44px; height: 38px;
+            background: var(--jelly-pink);
+            border-radius: 50% 50% 45% 45%;
+            opacity: 0.85;
+            z-index: 1;
+        }
+
+        .paw-item::after {
+            content: ''; position: absolute; top: 12px; left: 50%;
+            transform: translateX(-50%);
+            width: 15px; height: 19px;
+            background: var(--jelly-pink);
+            border-radius: 50%;
+            box-shadow: -24px 6px 0 var(--jelly-pink), 24px 6px 0 var(--jelly-pink);
+            opacity: 0.85;
+            z-index: 2;
+        }
+
+        .paw-item.opened { background: #eee; opacity: 0.3; pointer-events: none; box-shadow: none; transform: scale(0.9); }
+        .paw-item.opened .paw-number { display: none; }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 100;
+        }
+
+        .modal-content {
+            background: white; padding: 50px; border-radius: 40px; text-align: center;
+            border: 8px solid var(--jelly-pink);
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: var(--font-round);
+        }
+
+        @keyframes pop { from { transform: scale(0.5); } to { transform: scale(1); } }
+        .reward-text { font-size: 32px; font-weight: bold; color: var(--dark-purple); margin-top: 20px; }
+        
+        .close-modal-btn {
+            margin-top: 25px;
+            padding: 12px 35px;
+            border-radius: 20px;
+            border: none;
+            background: var(--dark-purple);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            font-family: var(--font-round);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🐾 하제냥이 뽑기판 🐾</h1>
+
+    <div class="admin-panel">
+        <div id="rewardInputs"></div>
+        
+        <div class="button-group">
+            <button class="refresh-btn" onclick="initBoard()">설정 적용 (총 <span id="totalCountDisplay">0</span>개)</button>
+            <button class="reset-btn" onclick="resetCurrentBoard()">판 새로고침 (섞기)</button>
+        </div>
+        <p style="font-size: 0.9rem; color: #888; margin-top: 15px; text-align: center;">
+            * 리스트는 브라우저에 자동 저장되니 안심하냥! 🐱
+        </p>
+    </div>
+
+    <div class="board" id="gameBoard"></div>
+
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <div style="font-size: 60px;">🐱</div>
+            <h2 style="font-size: 2rem; color: #555;">두구두구... 축하한다냥!</h2>
+            <div class="reward-text" id="rewardResult">보상 내용</div>
+            <button class="close-modal-btn" onclick="closeModal()">닫기</button>
+        </div>
+    </div>
+
+    <script>
+        let gameData = [];
+
+        window.onload = function() {
+            const savedRewards = localStorage.getItem('hajeNyangRewards');
+            if (savedRewards) {
+                const rewards = JSON.parse(savedRewards);
+                rewards.forEach((reward, index) => {
+                    addRow(reward.name, reward.qty, index === 0);
+                });
+            } else {
+                addRow('🐟 맛있는 츄르', 1, true);
+                addRow('💀 다음 기회에', 11, false);
+            }
+            updateTotalCount();
+            initBoard();
+        };
+
+        function addRow(name = '', qty = 1, isFirst = false) {
+            const container = document.getElementById('rewardInputs');
+            const div = document.createElement('div');
+            div.className = 'reward-setting-row';
+            
+            const btnTag = isFirst 
+                ? `<button class="btn-add" onclick="addRow('', 1, false)">+</button>` 
+                : `<button class="btn-remove" onclick="removeRow(this)">-</button>`;
+
+            div.innerHTML = `
+                <input type="text" class="reward-name" placeholder="보상 이름" value="${name}" oninput="saveToLocal()" style="flex: 2;">
+                <input type="number" class="reward-qty" placeholder="개수" value="${qty}" style="flex: 0.5; min-width: 50px;" oninput="saveToLocal()">
+                ${btnTag}
+            `;
+            container.appendChild(div);
+            updateTotalCount();
+        }
+
+        function removeRow(btn) {
+            btn.parentElement.remove();
+            saveToLocal();
+            updateTotalCount();
+        }
+
+        function saveToLocal() {
+            const rewardNames = document.querySelectorAll('.reward-name');
+            const rewardQtys = document.querySelectorAll('.reward-qty');
+            const rewardList = [];
+
+            rewardNames.forEach((input, index) => {
+                rewardList.push({
+                    name: input.value,
+                    qty: parseInt(rewardQtys[index].value || 0)
+                });
+            });
+
+            localStorage.setItem('hajeNyangRewards', JSON.stringify(rewardList));
+            updateTotalCount();
+        }
+
+        function updateTotalCount() {
+            let total = 0;
+            document.querySelectorAll('.reward-qty').forEach(input => {
+                total += parseInt(input.value || 0);
+            });
+            document.getElementById('totalCountDisplay').innerText = total;
+        }
+
+        function initBoard() {
+            const rewardNames = document.querySelectorAll('.reward-name');
+            const rewardQtys = document.querySelectorAll('.reward-qty');
+            
+            gameData = [];
+            rewardNames.forEach((input, index) => {
+                const name = input.value || "선물";
+                const qty = parseInt(rewardQtys[index].value || 0);
+                for(let i=0; i<qty; i++) { gameData.push(name); }
+            });
+
+            if(gameData.length === 0) {
+                alert("보상을 입력해달라냥!");
+                return;
+            }
+            renderBoard();
+        }
+
+        function resetCurrentBoard() {
+            if(gameData.length === 0) initBoard();
+            else renderBoard();
+        }
+
+        function renderBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+
+            const shuffleData = [...gameData];
+            for (let i = shuffleData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffleData[i], shuffleData[j]] = [shuffleData[j], shuffleData[i]];
+            }
+
+            shuffleData.forEach((reward, i) => {
+                const item = document.createElement('div');
+                item.className = 'paw-item';
+                const numSpan = document.createElement('span');
+                numSpan.className = 'paw-number';
+                numSpan.innerText = i + 1;
+                
+                item.appendChild(numSpan);
+                item.onclick = () => openReward(reward, item);
+                board.appendChild(item);
+            });
+        }
+
+        function openReward(rewardName, element) {
+            if (element.classList.contains('opened')) return;
+            element.classList.add('opened');
+            document.getElementById('rewardResult').innerText = rewardName;
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
