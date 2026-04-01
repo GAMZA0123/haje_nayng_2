@@ -9,7 +9,7 @@
             --light-purple: #f3e5f5;
             --main-purple: #ce93d8;
             --dark-purple: #ab47bc;
-            --jelly-pink: #ff80ab;
+            --jelly-pink: #ff80ab; /* 젤리 색상 */
             --number-color: #7b1fa2;
             --font-round: 'Jua', 'Gaegu', sans-serif;
         }
@@ -27,7 +27,7 @@
         h1 { 
             color: var(--dark-purple); 
             margin-bottom: 10px; 
-            font-size: clamp(2rem, 5vw, 3rem); /* 화면 크기에 맞게 제목 조절 */
+            font-size: clamp(2rem, 5vw, 3rem);
             text-shadow: 2px 2px 0px white;
         }
 
@@ -83,15 +83,15 @@
         .reset-btn { background: var(--dark-purple); box-shadow: 0 4px 0 #7b1fa2; }
         .refresh-btn:active, .reset-btn:active { transform: translateY(4px); box-shadow: none; }
 
-        /* 뽑기판 영역 - 가로 20개 설정 */
+        /* 뽑기판 영역 - 가로 20개 레이아웃 개선 */
         .board {
             display: grid;
             grid-template-columns: repeat(20, 1fr); 
-            gap: 8px;
+            gap: clamp(4px, 0.5vw, 10px); /* 간격을 유동적으로 */
             width: 100%;
-            max-width: 1500px; /* 넓은 화면 지원 */
+            max-width: 1600px; /* 더 넓게 */
             background: rgba(255, 255, 255, 0.6);
-            padding: 20px;
+            padding: 25px;
             border-radius: 40px;
             box-shadow: inset 0 0 20px rgba(171, 71, 188, 0.1);
         }
@@ -101,6 +101,7 @@
         @media (max-width: 1000px) { .board { grid-template-columns: repeat(10, 1fr); } }
         @media (max-width: 600px) { .board { grid-template-columns: repeat(5, 1fr); } }
 
+        /* 발바닥 디자인 복구 및 개선 */
         .paw-item {
             aspect-ratio: 1 / 1;
             width: 100%;
@@ -109,46 +110,58 @@
             position: relative;
             cursor: pointer;
             transition: transform 0.2s;
-            box-shadow: 0 3px 0 var(--main-purple);
+            box-shadow: 0 clamp(2px, 0.3vw, 5px) 0 var(--main-purple);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .paw-item:hover { transform: scale(1.15); z-index: 10; }
+        .paw-item:hover { transform: scale(1.2); z-index: 10; }
         
+        /* 발바닥 번호 위치 개선 */
         .paw-number {
             position: absolute;
-            bottom: 15%;
+            bottom: 22%; /* 젤리 중앙보다 약간 위에 */
             left: 50%;
             transform: translateX(-50%);
-            z-index: 3;
+            z-index: 5;
             font-weight: bold;
-            font-size: clamp(10px, 1.2vw, 15px); /* 숫자가 안 겹치게 작게 조절 */
+            font-size: clamp(10px, 1vw, 16px);
             color: var(--number-color);
             pointer-events: none;
             text-shadow: 1px 1px 0px white;
         }
 
+        /* 큰 젤리 패드 디자인 복구 */
         .paw-item::before {
-            content: ''; position: absolute; bottom: 10%; left: 50%;
+            content: ''; 
+            position: absolute; 
+            bottom: 10%; /* 아래쪽 배치 */
+            left: 50%;
             transform: translateX(-50%);
-            width: 50%; height: 45%;
+            width: 55%; /* 너비 최적화 */
+            height: 48%; /* 높이 최적화 */
             background: var(--jelly-pink);
             border-radius: 50% 50% 45% 45%;
-            opacity: 0.85;
-            z-index: 1;
+            opacity: 0.9;
+            z-index: 2;
         }
 
+        /* 작은 발가락 젤리 디자인 복구 */
         .paw-item::after {
-            content: ''; position: absolute; top: 15%; left: 50%;
+            content: ''; 
+            position: absolute; 
+            top: 15%; /* 위쪽 배치 */
+            left: 50%;
             transform: translateX(-50%);
-            width: 18%; height: 22%;
+            width: 20%; /* 개별 발가락 너비 */
+            height: 25%; /* 개별 발가락 높이 */
             background: var(--jelly-pink);
             border-radius: 50%;
-            box-shadow: -150% 40% 0 var(--jelly-pink), 150% 40% 0 var(--jelly-pink);
-            opacity: 0.85;
-            z-index: 2;
+            /* 그림자를 이용해 3개의 발가락 구현, 간격 최적화 */
+            box-shadow: -155% 45% 0 var(--jelly-pink), 155% 45% 0 var(--jelly-pink);
+            opacity: 0.9;
+            z-index: 3;
         }
 
         .paw-item.opened { background: #eee; opacity: 0.3; pointer-events: none; box-shadow: none; transform: scale(0.85); }
@@ -215,7 +228,8 @@
         let gameData = [];
 
         window.onload = function() {
-            const savedRewards = localStorage.getItem('hajeNyangRewards_v20');
+            // 저장소 이름을 구분하여 20줄 버전으로 새롭게 시작
+            const savedRewards = localStorage.getItem('hajeNyangRewards_v20_pawfix');
             if (savedRewards) {
                 const rewards = JSON.parse(savedRewards);
                 rewards.forEach((reward, index) => {
@@ -265,7 +279,7 @@
                 });
             });
 
-            localStorage.setItem('hajeNyangRewards_v20', JSON.stringify(rewardList));
+            localStorage.setItem('hajeNyangRewards_v20_pawfix', JSON.stringify(rewardList));
             updateTotalCount();
         }
 
